@@ -18,22 +18,22 @@ module.exports = {
 			.addComponents(upload);
 
 		const DiscordID = interaction.user.id
+		const DiscordUserName = interaction.user.username
+		await interaction.deferReply({ephemeral: true});
 		try {
-            await interaction.deferReply({ephemeral: true});
 			userData = require('../cache/users/' + DiscordID + '.json')
-			console.log(userData)
 			const SpotifyID = userData.SpotifyID
 			userPlaylists = require('../cache/playlists/'+SpotifyID+'.json')
+			console.log('['+DiscordUserName+'] ran command /playlists.')
             for (let x = 0; x < userPlaylists.length+1; x++) {
-                console.log("Sending Playlist "+x+" of " + userPlaylists.length + " for " + DiscordID)
+                console.log('['+DiscordUserName+"] Sending Playlist "+x+" of " + userPlaylists.length)
                 //await wait(1000)
                 await interaction.followUp({ content: '# ['+userPlaylists[x].name+']'+'('+userPlaylists[x].external_urls.spotify+')' +"\n" + userPlaylists[x].tracks.total + " Tracks" + "\n", components:[row] , ephemeral: true });
-              }
-              
+            }
 		}
 		catch (error) {
-            console.log(error)
-			interaction.reply({ content: 'Unable to find your user data! Try using /register. ', ephemeral: true });
+			interaction.followUp({ content: 'Unable to find any playlists linked to you! Try using /check.', ephemeral: true });
+			console.log('['+DiscordUserName+'] ran command /playlists but no playlists were found linked to them.')
 		}
 	},
 };

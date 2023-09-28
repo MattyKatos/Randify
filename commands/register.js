@@ -12,9 +12,11 @@ module.exports = {
 	async execute(interaction) {
 		const SpotifyID = interaction.options.getString('userid')
 		const DiscordID = interaction.user.id
-		userData = '{"DiscordID":"'+DiscordID+'","SpotifyID":"'+SpotifyID+'"}'
+		const DiscordUserName = interaction.user.username
+		const DiscordGlobalName = interaction.user.globalName
+		userData = '{"DiscordID":"'+DiscordID+'","DiscordUserName":"'+DiscordUserName+'","DiscordGlobalName":"'+DiscordGlobalName+'","SpotifyID":"'+SpotifyID+'"}'
 		fs.writeFileSync('./cache/users/'+DiscordID+'.json',userData)
 		interaction.reply({content:'Linked!', ephemeral: true});
-		console.log(userData)
+		console.log('['+DiscordUserName+'] ran command /register. User data has been created.')
 	},
 };

@@ -48,14 +48,28 @@ const getPlaylists = async (userID) => {
             }
         });
         console.log(response.data);
-        fs.writeFile('./cache/'+userID+'playlists.json'),JSON.stringify(response.data), error => {
-            if (error) {
-                console.log(error);
+        fs.writeFileSync('./cache/playlists'+userID+'.json',JSON.stringify(response.data.items).substring(0,JSON.stringify(response.data.items).length-1))
+        if(response.data.next){getMore(response.data.next,userID)}else{fs.appendFileSync('./cache/playlists'+userID+'.json',']')}
+    } catch (error) {
+        console.log(error);
+    } 
+};
+
+const getMore = async (next,userID) => {
+    const access_token = await getAuth();
+    const api_url = next
+    try {
+        const response = await axios.get(api_url, {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
             }
-        }
+        });
+        console.log(response.data);
+        fs.appendFileSync('./cache/playlists'+userID+'.json',','+JSON.stringify(response.data.items).substring(1,JSON.stringify(response.data.items).length-1))
+        if(response.data.next){getMore(response.data.next,userID)}else{fs.appendFileSync('./cache/playlists'+userID+'.json',']')}
     } catch (error) {
         console.log(error);
     }
 };
 
-getPlaylists('cannachronic')
+getPlaylists('31mtzjumtdcnvmu2rwaffycmhc64')
